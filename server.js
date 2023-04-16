@@ -22,3 +22,13 @@ app.use(express.urlencoded({ extended: true}));
 
 app.use(express.static('public'));
 
+// reads the db.json file and returns note as JSON string
+app.get('/api/notes', (req, res) =>
+    res.sendFile(path.join(__dirname, './db/db.json'))
+);
+
+// returns notes.html file
+app.get('/notes', (req, res) =>
+    res.sendFile(path.join(__dirname, '/public/notes.html'))
+);
+
