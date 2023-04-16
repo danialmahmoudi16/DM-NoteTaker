@@ -11,7 +11,7 @@ const path = require('path');
 const uuid = require('uuid');
 
 // tells server to listen to the specific port 3001
-const PORT = process.nextTick.PORT || 3001;
+const PORT = process.env.PORT || 3001;
 
 // creates express application
 const app = express();
