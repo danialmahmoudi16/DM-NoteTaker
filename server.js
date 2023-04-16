@@ -34,7 +34,7 @@ app.get('/notes', (req, res) =>
 
 
 app.post('/aoi/notes', (req, res) => {
-    let input = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'))
+    let input = JSON.parse(fs.readFile('./db/db.json', 'utf8'))
     const note = {
         title: req.body.title,
         text: req.body.text,
