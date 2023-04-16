@@ -24,7 +24,7 @@ app.use(express.static('public'));
 
 // reads the db.json file and returns note as JSON string
 app.get('/api/notes', (req, res) =>
-    res.sendFile(path.join(__dirname, './db/db.json'))
+    res.sendFile(path.join(__dirname, './db/db.json')) 
 );
 
 // returns notes.html file
