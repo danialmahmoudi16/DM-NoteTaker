@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 // brings in uuid method to make unique id for each note input
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 // tells server to listen to the specific port 3001
 const PORT = process.env.PORT || 3001;
@@ -18,7 +18,7 @@ const app = express();
 
 // middleware for parsing JSON and urlencoded data
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
@@ -34,11 +34,13 @@ app.get('/notes', (req, res) =>
 
 // reads the db.json file and returns note as JSON string
 app.get('/api/notes', (req, res) => {
-    fs.readFile(path.join(__dirname, './db/db.json'), "utf8", (error,notes) => {
+    fs.readFile('./db/db.json', 'utf8', (error, input) => {
         if (error) {
-            return console.log(error)
+            console.log(error)
+        } else {
+            const newNotes = JSON.parse(input);
+            return res.status(200).json(newNotes)
         }
-    res.json(JSON.parse(notes))
     })
 });
 
@@ -46,30 +48,70 @@ app.get('/api/notes', (req, res) => {
 
 
 app.post('/api/notes', (req, res) => {
-    let input = JSON.parse(fs.readFile('./db/db.json', 'utf8'))
-    const note = {
-        title: req.body.title,
-        text: req.body.text,
-        id: uuid(),
-    };
-    input.push(note)
-    fs.writeFile('./db/db.json', JSON.stringify(input))
 
-    res.json(input)
+    const { title, text } = req.body
+    const note = {
+        title,
+        text,
+        id: uuidv4(),
+    };
+    fs.readFile('./db/db.json', 'utf8', (error, input) => {
+        if (error) {
+            console.log(error);
+        } else {
+            const parseNote = JSON.parse(input);
+
+            parseNote.push(note);
+
+            fs.writeFile('./db/db.json', JSON.stringify(parseNote, null, 1), (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.info("Notes have been updated!")
+                    res.json(note)
+                }
+
+            });
+        }
+    })
 });
 
+
+
+
+
+
+
 app.delete('/api/notes:id', (req, res) => {
-    const input = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'))
+    const erasenote = req.params.id;
 
-    const deletednotes = input.filter( note => note.id.toString() !== req.params.id.toString());
+    fs.readFile(__dirname + './db/db.json', "utf8").then((error, input) => {
+        if (error) {
+            console.log(error);
+        } else {
+            let noteinv = JSON.parse(input);
 
-    fs.writeFile('./db/db.json', JSON.stringify(input))
+            for (let i = 0; i < noteinv.length; i++) {
+                if (noteinv[i].id === erasenote) {
+                    noteinv.splice(i, 1)
+                }
+            }
+            fs.writeFile('./db/db.json', JSON.stringify(noteinv), (error, input) => {
+                if (error) {
+                    return error
+                }
+                console.log(noteinv)
+                res.json(noteinv);
+            })
 
-    res.json(input)
-    
+        }
+    })
 })
 
 
+app.get('*', (req, res) =>
+    res.sendFile(path.join(__dirname, '/public/index.html')),
+);
 
 app.listen(PORT, () =>
     console.log(`Listening at http://localhost:${PORT}`),
