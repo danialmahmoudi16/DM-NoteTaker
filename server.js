@@ -22,9 +22,9 @@ app.use(express.urlencoded({ extended: true}));
 
 app.use(express.static('public'));
 
-// reads the db.json file and returns note as JSON string
-app.get('/api/notes', (req, res) =>
-    res.sendFile(path.join(__dirname, './db/db.json')) 
+// returns index.html file
+app.get('/', (req, res) =>
+    res.sendFile(path.join(__dirname, '/public/index.html')),
 );
 
 // returns notes.html file
@@ -32,8 +32,20 @@ app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
 
+// reads the db.json file and returns note as JSON string
+app.get('/api/notes', (req, res) => {
+    fs.readFile(path.join(__dirname, './db/db.json'), "utf8", (error,notes) => {
+        if (error) {
+            return console.log(error)
+        }
+    res.json(JSON.parse(notes))
+    })
+});
 
-app.post('/aoi/notes', (req, res) => {
+
+
+
+app.post('/api/notes', (req, res) => {
     let input = JSON.parse(fs.readFile('./db/db.json', 'utf8'))
     const note = {
         title: req.body.title,
@@ -57,9 +69,7 @@ app.delete('/api/notes:id', (req, res) => {
     
 })
 
-app.get('*', (req, res) =>
-    res.sendFile(path.join(__dirname, '/public/index.html')),
-);
+
 
 app.listen(PORT, () =>
     console.log(`Listening at http://localhost:${PORT}`),
