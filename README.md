@@ -10,5 +10,14 @@ Use this app to save notes to the existing db.json file
 ## Testing
 Implement this app by saving notes and assessing if they are added to the db.json file, which maintains all input from the user.
 
-## Tests
+## Demo
+https://drive.google.com/file/d/168-RNYr4T1xFvNKfDawV-l5rK63CDw1O/view
+
+## Heroku Deployment
+https://dm-notetake.herokuapp.com/
+
+## Questions
+For any questions please reach out to me at dan84394@gmail.com
+
+Github Repo: https://github.com/danialmahmoudi16
 
