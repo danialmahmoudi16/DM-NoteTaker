@@ -18,7 +18,7 @@ const app = express();
 
 // middleware for parsing JSON and urlencoded data
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
@@ -34,7 +34,7 @@ app.get('/notes', (req, res) =>
 
 // reads the db.json file and returns note as JSON string
 app.get('/api/notes', (req, res) => {
-    fs.readFile('./db/db.json', 'utf8', (error,input) => {
+    fs.readFile('./db/db.json', 'utf8', (error, input) => {
         if (error) {
             console.log(error)
         } else {
@@ -49,7 +49,7 @@ app.get('/api/notes', (req, res) => {
 
 app.post('/api/notes', (req, res) => {
 
-    const { title, text} = req.body
+    const { title, text } = req.body
     const note = {
         title,
         text,
@@ -60,19 +60,19 @@ app.post('/api/notes', (req, res) => {
             console.log(error);
         } else {
             const parseNote = JSON.parse(input);
-        
-         parseNote.push(note);
-    
-        fs.writeFile('./db/db.json', JSON.stringify(parseNote, null, 1), (err) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.info("Notes have been updated!")
-            res.json(note)
-        };
-    
-    });
-    }
+
+            parseNote.push(note);
+
+            fs.writeFile('./db/db.json', JSON.stringify(parseNote, null, 1), (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.info("Notes have been updated!")
+                    res.json(note)
+                };
+
+            });
+        }
     })
 });
 
@@ -80,18 +80,18 @@ app.post('/api/notes', (req, res) => {
 app.delete('/api/notes:id', (req, res) => {
     let erasenote = req.params.id
 
-    fs.readFile(__dirname + './db/db.json', "utf8", (error, input) =>{
+    fs.readFile(__dirname + './db/db.json', "utf8", (error, input) => {
         if (error) {
             console.log(error);
         } else {
             let notelist = JSON.parse(input);
 
-            for (let i=0; i<notelist.length; i++){
+            for (let i = 0; i < notelist.length; i++) {
                 if (notelist[i].id === erasenote) {
                     notelist.splice(i, 1)
                 }
             }
-            fs.writeFile('./db/db.json', JSON.stringify(notelist), (error,input) => {
+            fs.writeFile('./db/db.json', JSON.stringify(notelist), (error, input) => {
                 if (error) {
                     return error
                 }
@@ -99,7 +99,8 @@ app.delete('/api/notes:id', (req, res) => {
                 res.json(noteinv);
             })
 
-        }})  
+        }
+    })
 })
 
 
